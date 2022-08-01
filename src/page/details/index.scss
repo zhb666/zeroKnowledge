@@ -1,0 +1,97 @@
+.Details_list {
+    width: 70%;
+    height: auto;
+    margin: 0 auto;
+    text-align: center;
+    h3{
+        font-size: 30px;
+    }
+    &>img{
+        text-align: center;
+    }
+    img{
+        margin: 20px 0;
+    }
+    p{
+        margin: 20px 0;
+        text-align: left;
+        font-size: 22px;
+    }
+}
+
+.Details_top {
+    width: 70%;
+    height: auto;
+    background: #FBFBFA;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    h3 {
+        text-align: center;
+        font-size: 28px;
+        margin-top: 20px;
+    }
+
+    h5 {
+        text-align: center;
+        font-size: 22px;
+        font-weight: normal;
+    }
+    .Details_ation{
+        width: 100%;
+        height: 350px;
+        display: flex;
+        .Details_ationL{
+            flex: .6;
+            margin-right: 30px;
+            img{
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+            }
+           
+        }
+        .Details_ationR{
+            flex: .3;
+            p{
+                margin:0 0 20px 0;
+            }
+            .money{
+                p{
+                    color: #037362;
+                    font-size: 22px;
+                }
+                span{
+                    color:rgb(96, 94, 94);
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+            }
+            .zhichizhe{
+                color: rgb(113, 110, 110);
+                font-size: 22px;
+                font-weight: 400;
+                span{
+                    font-size: 15px;
+                }
+            }
+            .button{
+                margin-top: 10px;
+                height: 38px;
+              }
+        }
+    }
+}
+
+.steps_div{
+    width: 100%;
+    padding: 30px 0;
+    margin: 20px 0;
+    overflow: hidden;
+    background: #f7f7f5;
+    .steps_s{
+        width: 70%;
+        margin: 0 auto;
+    }
+}

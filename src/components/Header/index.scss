@@ -1,0 +1,87 @@
+.header {
+  width: 100%;
+  height: 76px;
+  flex: 0 0 auto;
+  background: rgb(20, 20, 20);
+  overflow: hidden;
+
+  .logo {
+    height: 26px;
+    margin: 22px 40px;
+    float: left;
+    // height: auto;
+  }
+
+  .head-navbar {
+    width: 180px;
+    height: 76px;
+    float: left;
+    display: flex;
+
+    li {
+      flex: 1;
+      line-height: 76px;
+      font-size: 20px;
+      font-weight: bold;
+  
+      color: #028858!important;
+
+      a {
+        color: #8c9fad;
+      }
+
+      .active {
+        color: #0066ed;
+      }
+    }
+  }
+
+  .lang-select {
+    // width: 200px;
+    float: right;
+    padding: 20px;
+    box-sizing: border-box;
+
+    .ant-select {
+      width: 96px !important;
+      color: #8c9fad;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .ant-select-selector {
+      border: none !important;
+      text-align: center;
+    }
+  }
+
+  .login—registered {
+    float: right;
+    padding: 20px 0;
+    box-sizing: border-box;
+    margin-right: 50px;
+
+    .registered {
+      background: #0066ed;
+    }
+
+    .login—registeredPan {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 15px;
+      color: #8c9fad;
+      display: inline-block;
+      margin-right: 20px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .login {
+      font-size: 14px;
+      color: #8c9fad;
+      display: inline-block;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+  }
+}
