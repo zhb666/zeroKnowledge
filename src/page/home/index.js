@@ -2,19 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import {
+  notification,
   Avatar,
   List,
   Space,
   Button,
   Modal,
-  Input,
   Carousel,
-  Progress
+  Progress,
+  Form,
+  Input
 } from "antd";
 
 import "./index.css";
 
-const data = [
+const datas = [
   {
     href: "",
     progress: 100,
@@ -61,6 +63,14 @@ const data = [
   }
 ];
 
+let listData = JSON.parse(window.localStorage.getItem("listData"));
+
+if (listData) {
+} else {
+  listData = datas;
+  window.localStorage.setItem("listData", JSON.stringify(datas));
+}
+
 const IconText = ({ icon, text }) => (
   <Space>
     {React.createElement(icon)}
@@ -71,13 +81,47 @@ const IconText = ({ icon, text }) => (
 function Home() {
   const history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [data, setData] = useState(listData);
+  const [form] = Form.useForm();
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 20 },
+      sm: { span: 6 }
+    },
+    wrapperCol: {
+      xs: { span: 18 },
+      sm: { span: 16 }
+    }
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log("Success:", values);
+      setData([
+        ...data,
+        {
+          href: "",
+          progress: 0,
+          title: values.name,
+          avatar: values.avatar,
+          description: values.description,
+          content: values.content
+        }
+      ]);
+      notification["success"]({
+        message: "success"
+      });
+      form.resetFields();
+      setIsModalVisible(false);
+    } catch (errorInfo) {
+      console.log("Failed:", errorInfo);
+    }
   };
 
   const handleCancel = () => {
@@ -87,6 +131,14 @@ function Home() {
   const getBlack = item => {
     history.push({ pathname: "/details", search: item.title });
   };
+
+  const onFinish = values => {
+    console.log(values);
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem("listData", JSON.stringify(data));
+  }, [data]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -102,23 +154,52 @@ function Home() {
         // okText="确认"
         // cancelText="取消"
       >
-        <p>
-          Name:
-          <Input placeholder="name" />
-        </p>
-
-        <p>
-          Target:
-          <Input placeholder="target" />
-        </p>
-        <p>
-          Description:
-          <Input placeholder="description" />
-        </p>
-        <p>
-          MilestoneDates:
-          <Input placeholder="description" />
-        </p>
+        <Form form={form} onFinish={onFinish} {...formItemLayout}>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Please input  name!" }]}
+          >
+            <Input placeholder="input Name" />
+          </Form.Item>
+          <Form.Item
+            name="avatar"
+            label="Avatar"
+            rules={[{ required: true, message: "Please input  Avatar!" }]}
+          >
+            <Input placeholder="input Avatar" />
+          </Form.Item>
+          <Form.Item
+            name="target"
+            label="Target"
+            rules={[{ required: true, message: "Please input  Target!" }]}
+          >
+            <Input placeholder="input Target" />
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="Content"
+            rules={[{ required: true, message: "Please input  content!" }]}
+          >
+            <Input placeholder="input Description" />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please input  Description!" }]}
+          >
+            <Input placeholder="input Description" />
+          </Form.Item>
+          <Form.Item
+            name="milestoneDates"
+            label="MilestoneDates"
+            rules={[
+              { required: true, message: "Please input  MilestoneDates!" }
+            ]}
+          >
+            <Input placeholder="input MilestoneDates" />
+          </Form.Item>
+        </Form>
       </Modal>
 
       <div className="Bannner">
@@ -145,6 +226,7 @@ function Home() {
       <div className="button">
         <Button
           type="primary"
+          htmlType="submit"
           className="createProject"
           size="large"
           onClick={showModal}
@@ -161,7 +243,7 @@ function Home() {
             onChange: page => {
               console.log(page);
             },
-            pageSize: 5
+            pageSize: 100
           }}
           dataSource={data}
           // footer={

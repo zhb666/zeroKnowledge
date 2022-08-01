@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Switch, BrowserRouter, Route, Redirect } from "react-router-dom";
+import { BackTop } from "antd";
 
 import Header from "../src/components/Header";
 import Home from "./page/home/index";
@@ -22,6 +23,7 @@ function App() {
         </div>
       </BrowserRouter>
       <footer>© Nervos</footer>
+      <BackTop />
     </div>
   );
 }
