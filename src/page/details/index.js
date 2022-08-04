@@ -1,18 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Progress, Button, Steps } from "antd";
+import { ajaxGet, ajaxPost } from "../../axios/http";
+import { URL } from "../../config/index";
+
 import "./index.scss";
 
 const { Step } = Steps;
 
-const Details = () => {
+const Details = props => {
+  const [data, setData] = useState({});
+
+  const get_projects = async () => {
+    let id = props.location.state.id;
+    const res = await ajaxGet(URL + `/projects/${id}`, {}, { timeout: 10000 });
+    setData(res);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    get_projects();
   }, []);
+
   return (
     <div className="Details animated fadeInLeft">
       <div className="Details_top">
-        <h3>Whispers in the West 🤠</h3>
-        <h5>An online co-op murder mystery game coming to Steam</h5>
+        <h3>{data.name}</h3>
+        <h5>{data.description}</h5>
         <div className="Details_ation">
           <div className="Details_ationL">
             <img
@@ -22,7 +35,7 @@ const Details = () => {
           </div>
           <div className="Details_ationR">
             <Progress
-              percent={30}
+              percent={(data.pledgedCKB / data.startupCKB) * 100}
               strokeColor={{
                 "0%": "#108ee9",
                 "100%": "#87d068"
@@ -31,8 +44,8 @@ const Details = () => {
             />
             <div className="money">
               <p>
-                $1,201 <br />
-                <span>已認繳（總目標 $ 3,652 ）</span>
+                目标数:{data.targetCKB} <br />
+                <span>已認繳 {data.pledgedCKB}</span>
               </p>
             </div>
             <div className="zhichizhe">
@@ -55,8 +68,23 @@ const Details = () => {
       </div>
 
       <div className="steps_div">
-        <Steps current={0} percent={30} className="steps_s">
-          <Step
+        <Steps
+          current={0}
+          percent={(data.pledgedCKB / data.startupCKB) * 100}
+          className="steps_s"
+        >
+          {data.milestones &&
+            data.milestones.map((item, index) => {
+              return (
+                <Step
+                  key={index}
+                  title={item.dueDate}
+                  subTitle="Left 00:00:00"
+                  description={item.description}
+                />
+              );
+            })}
+          {/* <Step
             title="2022-12-31"
             subTitle="Left 00:00:00"
             description="发布 demo 版本(3个关卡), 需要资金 30 %"
@@ -71,7 +99,7 @@ const Details = () => {
             title="2024-12-01"
             subTitle="Left 00:00:00"
             description="发布最终版本, 需要资金 100 % "
-          />
+          /> */}
         </Steps>
       </div>
 

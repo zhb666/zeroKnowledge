@@ -15,11 +15,12 @@ const Heater = () => {
     <div className="header">
       {/* logo */}
       <NavLink exact data-id="1" to="/">
-        <img
+        <p className="home">Crowdfunding DAO</p>
+        {/* <img
           className="logo"
           src="//www.nervos.org/wp-content/uploads/2020/12/topbar-nervos-logo.svg"
           alt=""
-        />
+        /> */}
       </NavLink>
 
       {/* 导航栏 */}

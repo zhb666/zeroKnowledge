@@ -8,11 +8,14 @@ import {
   Space,
   Button,
   Modal,
-  Carousel,
+  // Carousel,
   Progress,
   Form,
   Input
 } from "antd";
+// ajaxPost('/url?userId-501', { userId:501 }, { timeout: 10000 })
+import { ajaxGet, ajaxPost } from "../../axios/http";
+import { URL } from "../../config/index";
 
 import "./index.css";
 
@@ -87,7 +90,7 @@ function Home() {
   const formItemLayout = {
     labelCol: {
       xs: { span: 20 },
-      sm: { span: 6 }
+      sm: { span: 7 }
     },
     wrapperCol: {
       xs: { span: 18 },
@@ -103,22 +106,24 @@ function Home() {
     try {
       const values = await form.validateFields();
       console.log("Success:", values);
-      setData([
-        ...data,
-        {
-          href: "",
-          progress: 0,
-          title: values.name,
-          avatar: values.avatar,
-          description: values.description,
-          content: values.content
-        }
-      ]);
+      set_projects(values);
+      // setData([
+      //   ...data,
+      //   {
+      //     href: "",
+      //     progress: 0,
+      //     title: values.name,
+      //     avatar: values.avatar,
+      //     description: values.description,
+      //     content: values.content
+      //   }
+      // ]);
       notification["success"]({
         message: "success"
       });
-      form.resetFields();
+      // form.resetFields();
       setIsModalVisible(false);
+      get_projects();
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);
     }
@@ -129,19 +134,41 @@ function Home() {
   };
 
   const getBlack = item => {
-    history.push({ pathname: "/details", search: item.title });
+    console.log(item, item.id);
+    history.push({ pathname: "/details", state: { id: item.id } });
   };
 
   const onFinish = values => {
     console.log(values);
   };
 
-  useEffect(() => {
-    window.localStorage.setItem("listData", JSON.stringify(data));
-  }, [data]);
+  const get_projects = async () => {
+    const res = await ajaxGet(URL + "/projects", {}, { timeout: 10000 });
+    console.log(res);
+    setData(res);
+  };
+
+  const set_projects = async project => {
+    project.startupCKB = Number(project.startupCKB);
+    project.targetCKB = Number(project.targetCKB);
+    project.deliveries = JSON.parse(project.deliveries);
+    project.milestones = JSON.parse(project.milestones);
+
+    const res = await ajaxPost(URL + "/projects", project, { timeout: 10000 });
+    console.log(res);
+    // setData(res);
+  };
+
+  // useEffect(() => {
+  //   window.localStorage.setItem("listData", JSON.stringify(data));
+  // }, [data]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    get_projects();
   }, []);
 
   return (
@@ -156,6 +183,15 @@ function Home() {
       >
         <Form form={form} onFinish={onFinish} {...formItemLayout}>
           <Form.Item
+            name="creatorAddress"
+            label="CreatorAddress"
+            rules={[
+              { required: true, message: "Please input  creatorAddress!" }
+            ]}
+          >
+            <Input placeholder="input creatorAddress" />
+          </Form.Item>
+          <Form.Item
             name="name"
             label="Name"
             rules={[{ required: true, message: "Please input  name!" }]}
@@ -163,32 +199,18 @@ function Home() {
             <Input placeholder="input Name" />
           </Form.Item>
           <Form.Item
-            name="avatar"
-            label="Avatar"
-            rules={[{ required: true, message: "Please input  Avatar!" }]}
-          >
-            <Input placeholder="input Avatar" />
-          </Form.Item>
-          <Form.Item
-            name="target"
-            label="Target"
+            name="targetCKB"
+            label="TargetCKB"
             rules={[{ required: true, message: "Please input  Target!" }]}
           >
             <Input placeholder="input Target" />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Please input  content!" }]}
-          >
-            <Input placeholder="input Description" />
           </Form.Item>
           <Form.Item
             name="description"
             label="Description"
             rules={[{ required: true, message: "Please input  Description!" }]}
           >
-            <Input placeholder="input Description" />
+            <Input placeholder='input {"10000":{"reward":"discount"},"100000":{"reward":"free game"}}!' />
           </Form.Item>
           <Form.Item
             name="milestoneDates"
@@ -197,7 +219,35 @@ function Home() {
               { required: true, message: "Please input  MilestoneDates!" }
             ]}
           >
-            <Input placeholder="input MilestoneDates" />
+            <Input placeholder='input [{dueDate:"2023-01-01",targetCKBPercentage:50,approvalRatioThreshold:70,description:"demo"}]' />
+          </Form.Item>
+          <Form.Item
+            name="deliveries"
+            label="Deliveries"
+            rules={[{ required: true, message: "Please input  Deliveries!" }]}
+          >
+            <Input placeholder="input Deliveries" />
+          </Form.Item>
+          <Form.Item
+            name="startDate"
+            label="StartDate"
+            rules={[{ required: true, message: "Please input  startDate!" }]}
+          >
+            <Input placeholder="input startDate" />
+          </Form.Item>
+          <Form.Item
+            name="endDate"
+            label="EndDate"
+            rules={[{ required: true, message: "Please input  endDate!" }]}
+          >
+            <Input placeholder="input endDate" />
+          </Form.Item>
+          <Form.Item
+            name="startupCKB"
+            label="StartupCKB"
+            rules={[{ required: true, message: "Please input  StartupCKB!" }]}
+          >
+            <Input placeholder="input StartupCKB" />
           </Form.Item>
         </Form>
       </Modal>
@@ -214,8 +264,8 @@ function Home() {
           </div>
         </Carousel> */}
         <div className="banner_div">
-          <h2>基于Nervos开发的区块链众筹平台 </h2>
-          <h3>一个开源的公共区块链众筹生态系统 众筹形式的公益组织</h3>
+          <h2>Projects Crowdfunding in a New Way </h2>
+          {/* <h3>一个开源的公共区块链众筹生态系统 众筹形式的公益组织</h3> */}
           <img
             src="https://www.nervos.org/wp-content/uploads/2022/04/2.png"
             alt=""
@@ -243,7 +293,7 @@ function Home() {
             onChange: page => {
               console.log(page);
             },
-            pageSize: 100
+            pageSize: 5
           }}
           dataSource={data}
           // footer={
@@ -274,16 +324,24 @@ function Home() {
                   key="list-vertical-message"
                 />
               ]}
-              extra={<img width={272} alt="logo" src={item.avatar} />}
+              extra={
+                <img
+                  width={272}
+                  alt="logo"
+                  src={
+                    "https://ksr-ugc.imgix.net/assets/038/091/654/8f189220f87f79dec6fea3888b7dd9a3_original.png?ixlib=rb-4.0.2&crop=faces&w=352&h=198&fit=crop&v=1658948268&auto=format&frame=1&q=92&s=a1e0a12c9918373386c149fba1b254aa"
+                  }
+                />
+              }
             >
               <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
-                title={<a href={item.href}>{item.title}</a>}
+                avatar={<Avatar src={"https://joeschmoe.io/api/v1/random"} />}
+                title={<a href={item.href}>{item.name}</a>}
                 description={item.description}
               />
               {item.content}
               <Progress
-                percent={item.progress}
+                percent={(item.pledgedCKB / item.startupCKB) * 100}
                 strokeColor={{
                   "0%": "#108ee9",
                   "100%": "#87d068"

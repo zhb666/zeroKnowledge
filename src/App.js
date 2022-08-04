@@ -22,7 +22,7 @@ function App() {
           </Switch>
         </div>
       </BrowserRouter>
-      <footer>© Nervos</footer>
+      <footer>© Crowdfunding DAO</footer>
       <BackTop />
     </div>
   );
